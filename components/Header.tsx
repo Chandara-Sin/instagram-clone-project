@@ -19,6 +19,7 @@ function Header() {
             src="https://links.papareact.com/ocw"
             layout="fill"
             objectFit="contain"
+            priority
           />
         </div>
         <div className="relative w-10 flex-shrink-0 cursor-pointer lg:hidden">
@@ -26,6 +27,7 @@ function Header() {
             src="https://links.papareact.com/jjm"
             layout="fill"
             objectFit="contain"
+            priority
           />
         </div>
 
