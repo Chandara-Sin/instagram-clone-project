@@ -27,5 +27,5 @@ export interface IUserProfile {
 export interface IStoryProps {
   key: number
   img: string
-  userName: string
+  username: string
 }
