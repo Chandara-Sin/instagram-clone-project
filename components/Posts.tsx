@@ -10,7 +10,7 @@ import { HeartIcon as HeartIconFilled } from '@heroicons/react/solid'
 import { IPostProps } from '../interfaces/post'
 
 function Post(props: IPostProps) {
-  const { id, userName, profilePic, postImg, caption } = props
+  const { id, username, profilePic, postImg, caption } = props
   return (
     <div className="my-7 rounded-md border bg-white">
       {/* Profile Header */}
@@ -20,7 +20,7 @@ function Post(props: IPostProps) {
           alt="profile pic"
           className="mr-3 h-[3.2rem] w-[3.2rem] cursor-pointer rounded-full border-2 border-red-500 object-cover p-[2px]"
         />
-        <p className="flex-1 cursor-pointer text-sm font-bold">{userName}</p>
+        <p className="flex-1 cursor-pointer text-sm font-bold">{username}</p>
         <DotsHorizontalIcon className="h-5 cursor-pointer" />
       </div>
 
@@ -40,7 +40,7 @@ function Post(props: IPostProps) {
       {/* Caption */}
       <div>
         <p className="truncate p-5">
-          <span className="mr-1 cursor-pointer font-bold">{userName}</span>
+          <span className="mr-1 cursor-pointer font-bold">{username}</span>
           {caption}
         </p>
       </div>
@@ -67,7 +67,7 @@ function Posts() {
   const dummyData = [
     {
       id: 123,
-      userName: 'Diana__',
+      username: 'Diana__',
       profilePic:
         'https://img.freepik.com/free-photo/playful-hot-african-american-with-afro-hairstyle-pulling-hands-towards-make-selfie-winking-joyfully-smiling-broadly-making-new-profile-pic-social-network_176420-23120.jpg?t=st=1648291234~exp=1648291834~hmac=5cf1db2e4afc5035258c25030f431fe6fb8a402924dc120803b79c0171446a0b&w=2000',
       postImg:
@@ -76,7 +76,7 @@ function Posts() {
     },
     {
       id: 123,
-      userName: 'Sophea_*',
+      username: 'Sophea_*',
       profilePic:
         'https://img.freepik.com/free-photo/young-asian-woman-taking-happy-selfie-traveling-singapore-skyline-wanderlust-life-style-concept-with-millenial-girl-having-fun-by-urban-city-surrounds-vivid-bright-filter-with-focus-face_101731-1209.jpg?w=2000',
       postImg:
@@ -90,7 +90,7 @@ function Posts() {
         <Post
           key={index}
           id={profile.id}
-          userName={profile.userName}
+          username={profile.username}
           profilePic={profile.profilePic}
           postImg={profile.postImg}
           caption={profile.caption}

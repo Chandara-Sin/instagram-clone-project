@@ -1,7 +1,7 @@
 export interface IPostProps {
   key: number
   id: number
-  userName: string
+  username: string
   profilePic: string
   postImg: string
   caption: string
