@@ -25,7 +25,7 @@ export interface IUserProfile {
 }
 
 export interface IStoryProps {
-  key: string
+  key: number
   img: string
   userName: string
 }

@@ -30,7 +30,7 @@ function Stories() {
     <div className="mt-6 flex space-x-2 overflow-x-scroll rounded-md border border-gray-200 bg-white p-4 scrollbar-hide">
       {userProfiles.map((profile, index) => (
         <Story
-          key={profile.id.toString()}
+          key={profile.id}
           img={profile.avatar}
           userName={profile.username}
         />
