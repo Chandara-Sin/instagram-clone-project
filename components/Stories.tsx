@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { IStoryProps, IUserProfile } from '../interfaces/feed'
 
 function Story(props: IStoryProps) {
-  const { img, userName } = props
+  const { img, username } = props
   return (
     <div>
       <img
@@ -11,7 +11,7 @@ function Story(props: IStoryProps) {
         src={img}
         alt="profile picture"
       />
-      <p className="mx-[6px] w-16 truncate text-center text-xs">{userName}</p>
+      <p className="mx-[6px] w-16 truncate text-center text-xs">{username}</p>
     </div>
   )
 }
@@ -32,7 +32,7 @@ function Stories() {
         <Story
           key={profile.id}
           img={profile.avatar}
-          userName={profile.username}
+          username={profile.username}
         />
       ))}
     </div>
