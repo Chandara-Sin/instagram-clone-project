@@ -1,21 +1,31 @@
+import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 function MiniProfile() {
+  const { data: session } = useSession()
+
   return (
-    <div className="mt-10 ml-10 flex w-full items-center justify-between">
-      <div className="relative h-16 w-16">
+    <div className="flex items-center justify-between w-full mt-10 ml-10">
+      <div className="relative w-16 h-16">
         <Image
-          src={require('../public/assets/images/portfolio.jpg')}
+          src={
+            session
+              ? session?.user?.image
+              : require('../public/assets/images/portfolio.jpg')
+          }
           alt="profile pic"
           objectFit="cover"
           layout="fill"
-          className="cursor-pointer rounded-full"
+          className="rounded-full cursor-pointer"
         />
       </div>
-      <div className="mx-4 flex-1">
-        <h2 className="cursor-pointer font-bold">sx.dara_</h2>
-        <h3 className="text-sm text-gray-400">Chandara Sin</h3>
+      <div className="flex-1 mx-4">
+        <h2 className="font-bold cursor-pointer">{session?.user?.username}</h2>
+        <h3 className="text-sm text-gray-400">Bio xxx</h3>
       </div>
-      <button className="cursor-pointer text-sm font-semibold text-blue-400">
+      <button
+        onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+        className="px-3 py-2 text-sm font-semibold text-white transition duration-200 ease-out bg-blue-400 rounded-full cursor-pointer hover:scale-110"
+      >
         Sign Out
       </button>
     </div>

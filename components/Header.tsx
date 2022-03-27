@@ -9,9 +9,11 @@ import {
 } from '@heroicons/react/outline'
 import { HomeIcon } from '@heroicons/react/solid'
 import { signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 function Header() {
   const { data: session } = useSession()
+  const router = useRouter()
   return (
     <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
       <div className="flex justify-between max-w-6xl mx-5 lg:mx-auto">
@@ -22,6 +24,7 @@ function Header() {
             layout="fill"
             objectFit="contain"
             priority
+            onClick={() => router.push('/')}
           />
         </div>
         <div className="relative flex-shrink-0 w-10 cursor-pointer lg:hidden">
@@ -30,6 +33,7 @@ function Header() {
             layout="fill"
             objectFit="contain"
             priority
+            onClick={() => router.push('/')}
           />
         </div>
 
@@ -71,7 +75,7 @@ function Header() {
               className="rounded-full"
               layout="fill"
               objectFit="cover"
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: '/auth/signin' })}
             />
           </div>
         </div>

@@ -1,15 +1,18 @@
 import Image from 'next/image'
 import { Provider } from 'next-auth/providers'
 import { getProviders, signIn as SignIntoProvider } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 // Browser...
-export default function signIn({ providers }: { providers: Provider }) {
+function signIn({ providers }: { providers: Provider }) {
+  const router = useRouter()
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
       <div className="flex flex-col items-center justify-center py-5 bg-white border border-gray-300 rounded-md w-96">
         <img
           src="https://links.papareact.com/ocw"
           className="w-64 mb-5 cursor-pointer"
+          onClick={() => router.push('/')}
         />
         <form className="flex flex-col gap-2 w-80">
           <input
@@ -82,3 +85,5 @@ export async function getServerSideProps() {
     },
   }
 }
+
+export default signIn
