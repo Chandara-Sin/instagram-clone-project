@@ -45,8 +45,8 @@ function ModalDialog() {
       const docRef = await addDoc(collection(db, 'posts'), {
         username: session?.user?.username,
         caption: captionRef?.current?.value,
-        profileImg: session?.user?.image,
-        timestampe: serverTimestamp(),
+        profilePic: session?.user?.image,
+        timestamp: serverTimestamp(),
       })
       postID = docRef.id
     } catch (err) {
@@ -66,7 +66,7 @@ function ModalDialog() {
       .then(async (snapshot) => {
         const imgURL = await getDownloadURL(imageRef)
         await updateDoc(doc(db, 'posts', postID), {
-          image: imgURL,
+          postImg: imgURL,
         })
       })
       .catch((err) => {
