@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   BookmarkIcon,
   ChatIcon,
@@ -8,11 +9,62 @@ import {
 } from '@heroicons/react/outline'
 import { HeartIcon as HeartIconFilled } from '@heroicons/react/solid'
 import { IPostProps } from '../interfaces/post'
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  QueryDocumentSnapshot,
+  serverTimestamp,
+} from 'firebase/firestore'
+import { db } from '../firebase'
+import { useSession } from 'next-auth/react'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs'
+dayjs.extend(relativeTime)
 
 function Post(props: IPostProps) {
   const { id, username, profilePic, postImg, caption } = props
+  const { data: session } = useSession()
+  const [inputComment, setInputComment] = useState('')
+  const [getComments, setGetComments] = useState<Array<QueryDocumentSnapshot>>(
+    []
+  )
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(db, 'posts', id, 'comments'),
+          orderBy('timestamp', 'desc')
+        ),
+        (snapshot) => {
+          setGetComments(snapshot.docs)
+        }
+      ),
+    [db]
+  )
+
+  const handleUploadComment = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault()
+    try {
+      await addDoc(collection(db, 'posts', id, 'comments'), {
+        comment: inputComment,
+        username: session?.user?.username,
+        profilePic: session?.user?.image,
+        timestamp: serverTimestamp(),
+      })
+    } catch (err) {
+      throw err
+    }
+    setInputComment('')
+  }
+
   return (
-    <div className="my-7 rounded-md border bg-white">
+    <div className="bg-white border rounded-md my-7">
       {/* Profile Header */}
       <div className="flex items-center p-4">
         <img
@@ -20,43 +72,79 @@ function Post(props: IPostProps) {
           alt="profile pic"
           className="mr-3 h-[3.2rem] w-[3.2rem] cursor-pointer rounded-full border-2 border-red-500 object-cover p-[2px]"
         />
-        <p className="flex-1 cursor-pointer text-sm font-bold">{username}</p>
+        <p className="flex-1 text-sm font-bold cursor-pointer">{username}</p>
         <DotsHorizontalIcon className="h-5 cursor-pointer" />
       </div>
 
       {/* Post Image */}
-      <img src={postImg} alt="post img" className="w-full object-cover" />
+      <img
+        src={postImg}
+        alt="post img"
+        className="h-[614px] w-full object-cover"
+      />
 
       {/* Like Comment Buttons */}
       <div className="flex items-center justify-between px-4 pt-4">
         <div className="flex items-center space-x-4">
           <HeartIcon className="post-btn" />
           <ChatIcon className="post-btn" />
-          <PaperAirplaneIcon className="post-btn rotate-45" />
+          <PaperAirplaneIcon className="rotate-45 post-btn" />
         </div>
         <BookmarkIcon className="post-btn" />
       </div>
 
       {/* Caption */}
       <div>
-        <p className="truncate p-5">
-          <span className="mr-1 cursor-pointer font-bold">{username}</span>
+        <p className="p-5 truncate">
+          <span className="mr-1 font-bold cursor-pointer">{username}</span>
           {caption}
         </p>
       </div>
 
       {/* Comments */}
+      {!!getComments.length && (
+        <div className="my-1 ml-10 overflow-y-scroll max-h-20">
+          {getComments.map((item, index) => (
+            <div className="flex items-center mb-3 space-x-2" key={item.id}>
+              <img
+                src={item.data().profilePic}
+                className="rounded-full h-7"
+                alt="profile pic"
+              />
+              <p className="flex-1 text-sm">
+                <span className="font-semibold">{item.data().username}</span>{' '}
+                {item.data().comment}
+              </p>
+              <p className="pr-5 text-xs">
+                {item.data().timestamp &&
+                  dayjs(item.data().timestamp.toDate()).fromNow()}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Comment Input */}
       <div className="border-t">
         <form className="flex items-center px-4 py-2">
-          <EmojiHappyIcon className="h-7 w-7" />
+          <EmojiHappyIcon className="cursor-pointer h-7 w-7" />
           <input
             type="text"
+            value={inputComment}
             placeholder="Add a comment..."
             className="flex-1 border-none outline-none focus:ring-0"
+            onChange={(event) => setInputComment(event.target.value)}
           />
-          <button className="font-semibold text-blue-400">Post</button>
+          <button
+            type="submit"
+            disabled={!inputComment.trim()}
+            className={`font-semibold ${
+              !!inputComment.trim() ? 'text-blue-400' : 'text-gray-500'
+            }`}
+            onClick={handleUploadComment}
+          >
+            Post
+          </button>
         </form>
       </div>
     </div>
@@ -64,38 +152,32 @@ function Post(props: IPostProps) {
 }
 
 function Posts() {
-  const dummyData = [
-    {
-      id: 123,
-      username: 'Diana__',
-      profilePic:
-        'https://img.freepik.com/free-photo/playful-hot-african-american-with-afro-hairstyle-pulling-hands-towards-make-selfie-winking-joyfully-smiling-broadly-making-new-profile-pic-social-network_176420-23120.jpg?t=st=1648291234~exp=1648291834~hmac=5cf1db2e4afc5035258c25030f431fe6fb8a402924dc120803b79c0171446a0b&w=2000',
-      postImg:
-        'https://img.freepik.com/free-photo/influencer-posting-social-media_23-2149194122.jpg?t=st=1648291067~exp=1648291667~hmac=0c9c1f6538bf3b41faf04c62bad7a395de8e676900237f0a8baae59824f4ee1e&w=2000',
-      caption: 'This is dope',
-    },
-    {
-      id: 123,
-      username: 'Sophea_*',
-      profilePic:
-        'https://img.freepik.com/free-photo/young-asian-woman-taking-happy-selfie-traveling-singapore-skyline-wanderlust-life-style-concept-with-millenial-girl-having-fun-by-urban-city-surrounds-vivid-bright-filter-with-focus-face_101731-1209.jpg?w=2000',
-      postImg:
-        'https://img.freepik.com/free-photo/woman-owner-startup-company-selling-products-online-online-store-platform-sending-goods-through-courier-company-business-planning-online-selling-online-shopping-concepts_528263-2244.jpg?w=2000',
-      caption: 'This is me',
-    },
-  ]
+  const [getPosts, setGetPosts] = useState<Array<QueryDocumentSnapshot>>([])
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, 'posts'), orderBy('timestamp', 'desc')),
+        (snapshot) => {
+          setGetPosts(snapshot.docs)
+        }
+      ),
+    [db]
+  )
+
   return (
     <div>
-      {dummyData.map((profile, index) => (
-        <Post
-          key={index}
-          id={profile.id}
-          username={profile.username}
-          profilePic={profile.profilePic}
-          postImg={profile.postImg}
-          caption={profile.caption}
-        />
-      ))}
+      {!!getPosts.length &&
+        getPosts.map((profile, index) => (
+          <Post
+            key={index}
+            id={profile.id}
+            username={profile.data().username}
+            profilePic={profile.data().profilePic}
+            postImg={profile.data().postImg}
+            caption={profile.data().caption}
+          />
+        ))}
     </div>
   )
 }
