@@ -1,12 +1,30 @@
-import { Dialog, Transition } from '@headlessui/react'
 import React, { ChangeEvent, Fragment, useRef, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { useSession } from 'next-auth/react'
 import { useRecoilState } from 'recoil'
+import { FileUpload } from '../interfaces/modalDialog'
 import { modalDialogState } from '../atoms/modalAtom'
-import { FileUpload } from '../interfaces/modal-dialog'
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore'
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from 'firebase/storage'
+import { db, storage } from '../firebase'
+import { rejects } from 'assert'
 
 function ModalDialog() {
+  const { data: session } = useSession()
   const [openDialog, setOpenDialog] = useRecoilState(modalDialogState)
   const captionRef = useRef<HTMLInputElement | null>(null)
+  const focusButtonRef = useRef(null)
   const [imgUploaded, setImgUploaded] = useState<FileUpload | null>(null)
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,12 +38,50 @@ function ModalDialog() {
       })
     }
   }
+
+  const handleUploadPostDetail = async () => {
+    let postID = ''
+    try {
+      const docRef = await addDoc(collection(db, 'posts'), {
+        username: session?.user?.username,
+        caption: captionRef?.current?.value,
+        profileImg: session?.user?.image,
+        timestampe: serverTimestamp(),
+      })
+      postID = docRef.id
+    } catch (err) {
+      throw err
+    }
+    return postID
+  }
+
+  const handleUploadPost = async () => {
+    const postID = await handleUploadPostDetail()
+
+    // Create a path in firebase store
+    const imageRef = ref(storage, `posts/${postID}/image`)
+
+    // Upload img to firebase store
+    await uploadBytes(imageRef, imgUploaded?.file as Blob)
+      .then(async (snapshot) => {
+        const imgURL = await getDownloadURL(imageRef)
+        await updateDoc(doc(db, 'posts', postID), {
+          image: imgURL,
+        })
+      })
+      .catch((err) => {
+        throw err
+      })
+    setOpenDialog(false)
+    setImgUploaded(null)
+  }
   return (
-    <Transition.Root show={openDialog} as={Fragment}>
+    <Transition.Root appear show={openDialog} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-[60] overflow-y-auto"
         onClose={setOpenDialog}
+        initialFocus={focusButtonRef}
       >
         <div className="flex min-h-[800px] items-end justify-center text-center sm:block  sm:p-0">
           <Transition.Child
@@ -103,6 +159,7 @@ function ModalDialog() {
                           multiple
                           accept="image/*,audio/*,video/*"
                           hidden
+                          ref={focusButtonRef}
                           onChange={handleImageChange}
                         />
                         Select from computer
@@ -125,7 +182,11 @@ function ModalDialog() {
                         />
                       </div>
                       <div className="w-full p-5">
-                        <button className="w-full py-1 text-lg font-semibold text-white bg-red-500 rounded-full hover:bg-red-600">
+                        <button
+                          ref={focusButtonRef}
+                          onClick={handleUploadPost}
+                          className="w-full py-1 text-lg font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                        >
                           Post
                         </button>
                       </div>
