@@ -6,11 +6,15 @@ function Story(props: IStoryProps) {
   const { img, username } = props
   return (
     <div>
-      <img
-        className="mx-[6px] h-16 w-16 transform cursor-pointer rounded-full border-2 border-red-500 object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
-        src={img}
-        alt="profile picture"
-      />
+      <div className="relative mx-[6px] h-16 w-16 transform rounded-full bg-gradient-to-r from-[#ff8f39] via-[#f858a0] to-[#962fbf] p-[2px] transition duration-200 ease-out hover:scale-110">
+        <div className="relative bg-white rounded-full">
+          <img
+            className="cursor-pointer rounded-full object-contain p-[2px]"
+            src={img}
+            alt="profile picture"
+          />
+        </div>
+      </div>
       <p className="mx-[6px] w-16 truncate text-center text-xs">{username}</p>
     </div>
   )
@@ -27,7 +31,7 @@ function Stories() {
   }, [])
 
   return (
-    <div className="mt-6 flex space-x-2 overflow-x-scroll rounded-md border border-gray-200 bg-white p-4 scrollbar-hide">
+    <div className="flex p-4 mt-6 space-x-2 overflow-x-scroll bg-white border border-gray-200 rounded-md scrollbar-hide">
       {userProfiles.map((profile, index) => (
         <Story
           key={profile.id}
