@@ -16,6 +16,7 @@ function MiniProfile() {
           objectFit="cover"
           layout="fill"
           className="rounded-full cursor-pointer"
+          priority
         />
       </div>
       <div className="flex-1 mx-4">

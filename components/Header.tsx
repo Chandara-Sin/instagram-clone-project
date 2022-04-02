@@ -82,6 +82,7 @@ function Header() {
               layout="fill"
               objectFit="cover"
               onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+              priority
             />
           </div>
         </div>
