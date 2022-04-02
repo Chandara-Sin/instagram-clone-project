@@ -12,11 +12,14 @@ import { IPostProps } from '../interfaces/post'
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
   QueryDocumentSnapshot,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useSession } from 'next-auth/react'
@@ -31,6 +34,8 @@ function Post(props: IPostProps) {
   const [getComments, setGetComments] = useState<Array<QueryDocumentSnapshot>>(
     []
   )
+  const [getLikes, setGetLikes] = useState<Array<QueryDocumentSnapshot>>([])
+  const [hasLiked, setHasLiked] = useState(false)
 
   useEffect(
     () =>
@@ -43,8 +48,23 @@ function Post(props: IPostProps) {
           setGetComments(snapshot.docs)
         }
       ),
-    [db]
+    [db, id]
   )
+
+  useEffect(
+    () =>
+      onSnapshot(collection(db, 'posts', id, 'likes'), (snapshot) => {
+        setGetLikes(snapshot.docs)
+      }),
+    [db, id]
+  )
+
+  useEffect(() => {
+    const checkHasLiked = getLikes.findIndex(
+      (item) => item.id === session?.user?.uid
+    )
+    setHasLiked(checkHasLiked !== -1)
+  }, [getLikes])
 
   const handleUploadComment = async (
     event: React.MouseEvent<HTMLButtonElement>
@@ -61,6 +81,25 @@ function Post(props: IPostProps) {
       throw err
     }
     setInputComment('')
+  }
+
+  const handleLikedPost = async () => {
+    try {
+      if (hasLiked) {
+        await deleteDoc(
+          doc(db, 'posts', id, 'likes', session?.user?.uid as string)
+        )
+      } else {
+        await setDoc(
+          doc(db, 'posts', id, 'likes', session?.user?.uid as string),
+          {
+            username: session?.user?.username,
+          }
+        )
+      }
+    } catch (err) {
+      throw err
+    }
   }
 
   return (
@@ -84,18 +123,49 @@ function Post(props: IPostProps) {
       />
 
       {/* Like Comment Buttons */}
-      <div className="flex items-center justify-between px-4 pt-4">
+      <div className="flex items-center justify-between px-4 py-4">
         <div className="flex items-center space-x-4">
-          <HeartIcon className="post-btn" />
+          {hasLiked ? (
+            <HeartIconFilled
+              className="text-red-500 post-btn hover:text-red-500"
+              onClick={handleLikedPost}
+            />
+          ) : (
+            <HeartIcon className="post-btn" onClick={handleLikedPost} />
+          )}
           <ChatIcon className="post-btn" />
           <PaperAirplaneIcon className="rotate-45 post-btn" />
         </div>
         <BookmarkIcon className="post-btn" />
       </div>
 
+      {/* Count Like */}
+      {!!getLikes.length && (
+        <div className="px-5 pb-3">
+          {getLikes.length === 1 ? (
+            <p>
+              Liked by{' '}
+              <span className="font-semibold cursor-pointer">
+                {getLikes[0].data().username}
+              </span>
+            </p>
+          ) : getLikes.length <= 10 ? (
+            <p>
+              Liked by{' '}
+              <span className="font-semibold cursor-pointer">
+                {getLikes[0].data().username}
+              </span>{' '}
+              and <span className="font-semibold cursor-pointer"> others</span>
+            </p>
+          ) : (
+            <p>{`${getLikes.length} likes`}</p>
+          )}
+        </div>
+      )}
+
       {/* Caption */}
       <div>
-        <p className="p-5 truncate">
+        <p className="px-5 pb-4 truncate">
           <span className="mr-1 font-bold cursor-pointer">{username}</span>
           {caption}
         </p>
