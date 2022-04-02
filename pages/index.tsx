@@ -13,12 +13,12 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     session === null && router.push('/auth/signin')
-  }, [])
+  }, [session])
 
   return (
     <div className="">
       <Head>
-        <title>Instagram-personal-project</title>
+        <title>Instagram-clone-project</title>
         <link
           type="image/png"
           sizes="16x16"
