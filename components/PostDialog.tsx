@@ -2,7 +2,7 @@ import React, { ChangeEvent, Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useSession } from 'next-auth/react'
 import { useRecoilState } from 'recoil'
-import { FileUpload } from '../interfaces/modalDialog'
+import { FileUpload } from '../interfaces/postDialog'
 import { modalDialogState } from '../atoms/modalAtom'
 import {
   addDoc,
@@ -18,9 +18,8 @@ import {
   uploadString,
 } from 'firebase/storage'
 import { db, storage } from '../firebase'
-import { rejects } from 'assert'
 
-function ModalDialog() {
+function PostDialog() {
   const { data: session } = useSession()
   const [openDialog, setOpenDialog] = useRecoilState(modalDialogState)
   const captionRef = useRef<HTMLInputElement | null>(null)
@@ -202,4 +201,4 @@ function ModalDialog() {
   )
 }
 
-export default ModalDialog
+export default PostDialog
