@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Feed from '../components/Feed'
 import Header from '../components/Header'
-import ModalDialog from '../components/ModalDialog'
+import PostDialog from '../components/PostDialog'
 import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
 
       <Header />
       <Feed />
-      <ModalDialog />
+      <PostDialog />
     </div>
   )
 }
