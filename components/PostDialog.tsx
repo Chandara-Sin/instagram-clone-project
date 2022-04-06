@@ -82,7 +82,7 @@ function PostDialog() {
         onClose={setOpenDialog}
         initialFocus={focusButtonRef}
       >
-        <div className="flex min-h-[800px] items-end justify-center text-center sm:block  sm:p-0">
+        <div className="flex min-h-[800px] items-end justify-center text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

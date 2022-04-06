@@ -6,21 +6,16 @@ import Suggestions from './Suggestions'
 function Feed() {
   return (
     <main className="grid grid-cols-1 mx-auto md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3">
-      {/* Left Section */}
       <section className="col-span-2">
         <Stories />
         <Posts />
       </section>
-      {/* End of Left Section */}
-
-      {/* Right Section */}
       <section className="relative hidden md:col-span-1 xl:inline-grid">
         <div className="top-[3.2rem fixed">
           <MiniProfile />
           <Suggestions />
         </div>
       </section>
-      {/* End of Right Section */}
     </main>
   )
 }

@@ -6,7 +6,7 @@ function Story(props: IStoryProps) {
   const { img, username } = props
   return (
     <div>
-      <div className="relative mx-[6px] h-16 w-16 transform rounded-full bg-gradient-to-r from-[#ff8f39] via-[#f858a0] to-[#962fbf] p-[2px] transition duration-200 ease-out hover:scale-110">
+      <div className="relative mx-[6px] h-16 w-16 transform rounded-full bg-gradient-to-tr from-[#f5832c] via-[#f564a5] to-[#962fbf] p-[2px] transition duration-200 ease-out hover:scale-110">
         <div className="relative bg-white rounded-full">
           <img
             className="cursor-pointer rounded-full object-contain p-[2px]"
