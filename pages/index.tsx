@@ -6,6 +6,7 @@ import Feed from '../components/Feed'
 import Header from '../components/Header'
 import PostDialog from '../components/PostDialog'
 import { useRouter } from 'next/router'
+import SwitchProfileDialog from '../components/SwitchProfileDialog'
 
 const Home: NextPage = () => {
   const { data: session } = useSession()
@@ -48,6 +49,7 @@ const Home: NextPage = () => {
       <Header />
       <Feed />
       <PostDialog />
+      <SwitchProfileDialog />
     </div>
   )
 }

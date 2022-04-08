@@ -1,8 +1,11 @@
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
+import { useSetRecoilState } from 'recoil'
+import { switchProfileDialogState } from '../app/store'
+
 function MiniProfile() {
   const { data: session } = useSession()
-
+  const setOpenDialog = useSetRecoilState(switchProfileDialogState)
   return (
     <div className="flex items-center justify-between w-full mt-10 ml-10">
       <div className="relative w-16 h-16">
@@ -24,10 +27,10 @@ function MiniProfile() {
         <h3 className="text-sm text-gray-400">Bio xxx</h3>
       </div>
       <button
-        onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+        onClick={() => setOpenDialog(true)}
         className="px-3 py-2 text-sm font-semibold text-white transition duration-200 ease-out bg-blue-400 rounded-full cursor-pointer hover:scale-110"
       >
-        Sign Out
+        Switch
       </button>
     </div>
   )
