@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useSession } from 'next-auth/react'
 import { useRecoilState } from 'recoil'
 import { FileUpload } from '../interfaces/postDialog'
-import { modalDialogState } from '../atoms/modalAtom'
+import { postDialogState } from '../app/store'
 import {
   addDoc,
   collection,
@@ -11,17 +11,12 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadString,
-} from 'firebase/storage'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { db, storage } from '../firebase'
 
 function PostDialog() {
   const { data: session } = useSession()
-  const [openDialog, setOpenDialog] = useRecoilState(modalDialogState)
+  const [openDialog, setOpenDialog] = useRecoilState(postDialogState)
   const captionRef = useRef<HTMLInputElement | null>(null)
   const focusButtonRef = useRef(null)
   const [imgUploaded, setImgUploaded] = useState<FileUpload | null>(null)

@@ -17,7 +17,7 @@ import { HomeIcon } from '@heroicons/react/solid'
 import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useRecoilState } from 'recoil'
-import { modalDialogState } from '../atoms/modalAtom'
+import { postDialogState } from '../app/store'
 import { Popover, Transition } from '@headlessui/react'
 
 const profileDetails = [
@@ -43,7 +43,7 @@ const profileDetails = [
   },
 ]
 
-function ProfilePopover() {
+function ProfileDetails() {
   const { data: session } = useSession()
   const router = useRouter()
   return (
@@ -121,7 +121,7 @@ function ProfilePopover() {
 }
 
 function Header() {
-  const [openModalDialog, setOpenModalDialog] = useRecoilState(modalDialogState)
+  const [openModalDialog, setOpenModalDialog] = useRecoilState(postDialogState)
   const router = useRouter()
   return (
     <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
@@ -174,7 +174,7 @@ function Header() {
           />
           <UserGroupIcon className="nav-btn" />
           <HeartIcon className="nav-btn" />
-          <ProfilePopover />
+          <ProfileDetails />
         </div>
         {/* End of Right */}
       </div>
