@@ -13,21 +13,20 @@ function Suggestions() {
   }, [])
 
   return (
-    <div className="mt-4 ml-10 w-full">
-      <div className="mb-5 flex justify-between text-sm">
+    <div className="w-full mt-4 ml-10">
+      <div className="flex justify-between mb-5 text-sm">
         <h3 className="font-bold text-gray-400">Suggestions For You</h3>
-        <button className="text-grey-600 font-semibold">See all</button>
+        <button className="font-semibold text-grey-600">See all</button>
       </div>
-
       {suggestedUsers.map((profile, index) => (
-        <div key={index} className="mt-3 flex items-center justify-between">
+        <div key={index} className="flex items-center justify-between mt-3">
           <img
             src={profile.avatar}
             alt="profile avatar"
             className="h-10 w-10 cursor-pointer rounded-full border p-[2px]"
           />
-          <div className="ml-4 flex-1">
-            <h2 className="text-semibold cursor-pointer text-sm hover:underline">
+          <div className="flex-1 ml-4">
+            <h2 className="text-sm cursor-pointer text-semibold hover:underline">
               {profile.username}
             </h2>
             <h3 className="text-xs text-gray-400">
